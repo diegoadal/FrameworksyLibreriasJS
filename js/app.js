@@ -22,6 +22,14 @@ function colorBlink(){
 }
 
 //punto 2. generar numeros aleatorios y rellenar tablero
+//generar numeros aleatorios
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+//obtener filas y columnas
+
 
 //punto 3. verificar dulces >= 3 unidades, eliminar y sumar puntaje
 
