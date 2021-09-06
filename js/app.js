@@ -37,5 +37,22 @@ $(function(){
 //iniciar juego
 function startGame(){
   colorBlink();
+  $(".btn-reinicio").click(function(){
+    if($(this).text() == "Reiniciar"){
+      location.reload(true);
+    }
+    $(this).text("Reiniciar");
+    $("#timer").startTimer({
+      onComplete: endGame
+    })
+  });
+}
+//final del juego
+function endGame() {
+	$("div.panel-tablero, div.time").effect("fold");
+	$(".main-titulo").addClass("title-over")
+		.text("¡Gracias por jugar!");
+	$("div.score, div.moves, div.panel-score").width("100%");
+
 }
 //punto 7. interaccion del usuario drag & drop
