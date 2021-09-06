@@ -199,11 +199,6 @@ function setScore(candyCount) {
 	$('#score-text').text(score);
 }
 
-
-
-//punto 5. contador de movimientos
-
-
 //punto 4. temporizador
 //punto 6. boton de Iniciar
 //preparar juego
@@ -217,8 +212,9 @@ function startGame(){
     if($(this).text() == "Reiniciar"){
       location.reload(true);
     }
+    checkBoard();
     $(this).text("Reiniciar");
-    $("#timer").startTimer({
+    $('#timer').startTimer({
       onComplete: endGame
     })
   });
@@ -231,4 +227,132 @@ function endGame() {
 	$("div.score, div.moves, div.panel-score").width("100%");
 
 }
+//poner los dulces en el tablero
+function checkBoard() {
+	fillBoard();
+}
+function fillBoard() {
+	var top = 6;
+	var column = $('[class^="col-"]');
+	column.each(function () {
+		var candys = $(this).children().length;
+		var agrega = top - candys;
+		for (var i = 0; i < agrega; i++) {
+			var candyType = getRandomInt(1, 5);
+			if (i === 0 && candys < 1) {
+				$(this).append('<img src="image/' + candyType + '.png" class="element"></img>');
+			} else {
+				$(this).find('img:eq(0)').before('<img src="image/' + candyType + '.png" class="element"></img>');
+			}
+		}
+	});
+	addCandyEvents();
+	setValidations();
+}
+//eliminar dulces
+function setValidations() {
+	columnValidation();
+	rowValidation();
+	// Si hay dulces que borrar
+	if ($('img.delete').length !== 0) {
+		deletesCandyAnimation();
+	}
+}
+
+////punto 5. contador de movimientos
+//contador de movimientos
+function updateMoves() {
+	var actualValue = Number($('#movimientos-text').text());
+	var result = actualValue += 1;
+	$('#movimientos-text').text(result);
+}
+
 //punto 7. interaccion del usuario drag & drop
+function addCandyEvents() {
+	$('img').draggable({
+		containment: '.panel-tablero',
+		droppable: 'img',
+		revert: true,
+		revertDuration: 500,
+		grid: [100, 100],
+		zIndex: 10,
+		drag: constrainCandyMovement
+	});
+	$('img').droppable({
+		drop: swapCandy
+	});
+	enableCandyEvents();
+}
+function disableCandyEvents() {
+	$('img').draggable('disable');
+	$('img').droppable('disable');
+}
+function enableCandyEvents() {
+	$('img').draggable('enable');
+	$('img').droppable('enable');
+}
+//hace que el caramelo sea solido al moverse
+function constrainCandyMovement(event, candyDrag) {
+	candyDrag.position.top = Math.min(100, candyDrag.position.top);
+	candyDrag.position.bottom = Math.min(100, candyDrag.position.bottom);
+	candyDrag.position.left = Math.min(100, candyDrag.position.left);
+	candyDrag.position.right = Math.min(100, candyDrag.position.right);
+}
+//reemplaza a los caramelos anteriores
+function swapCandy(event, candyDrag) {
+	var candyDrag = $(candyDrag.draggable);
+	var dragSrc = candyDrag.attr('src');
+	var candyDrop = $(this);
+	var dropSrc = candyDrop.attr('src');
+	candyDrag.attr('src', dropSrc);
+	candyDrop.attr('src', dragSrc);
+	setTimeout(function () {
+		checkBoard();
+		if ($('img.delete').length === 0) {
+			candyDrag.attr('src', dragSrc);
+			candyDrop.attr('src', dropSrc);
+		} else {
+			updateMoves();
+		}
+	}, 1000);
+
+}
+function checkBoardPromise(result) {
+	if (result) {
+		checkBoard();
+	}
+}
+//eliminacion automatica de los elementos
+function deletesCandyAnimation() {
+	disableCandyEvents();
+	$('img.delete').effect('pulsate', 400);
+	$('img.delete').animate({
+			opacity: '0'
+		}, {
+			duration: 300
+		})
+		.animate({
+			opacity: '0'
+		}, {
+			duration: 400,
+			complete: function () {
+				deletesCandy()
+					.then(checkBoardPromise)
+					.catch(showPromiseError);
+			},
+			queue: true
+		});
+}
+//llenado automatico de los espacios con elementos
+function showPromiseError(error) {
+	console.log(error);
+}
+function deletesCandy() {
+	return new Promise(function (resolve, reject) {
+		if ($('img.delete').remove()) {
+			resolve(true);
+		} else {
+			reject('No se pudo eliminar Candy...');
+		}
+	})
+}
