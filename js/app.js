@@ -15,7 +15,7 @@ function colorBlink(){
     step: function(){
       $(this).css("color", "white");
       //.delay(1000)
-      colorBlink();
+      colorBlink();1
     },
     queue: true
   }, 1000)
@@ -217,8 +217,10 @@ function startGame(){
     $('#timer').startTimer({
       onComplete: endGame
     })
+
   });
 }
+
 //final del juego
 function endGame() {
 	$("div.panel-tablero, div.time").effect("fold");
@@ -253,7 +255,7 @@ function fillBoard() {
 function setValidations() {
 	columnValidation();
 	rowValidation();
-	// Si hay dulces que borrar
+	//si hay dulces que borrar
 	if ($('img.delete').length !== 0) {
 		deletesCandyAnimation();
 	}
@@ -314,7 +316,7 @@ function swapCandy(event, candyDrag) {
 		} else {
 			updateMoves();
 		}
-	}, 1000);
+	}, 500);
 
 }
 function checkBoardPromise(result) {
