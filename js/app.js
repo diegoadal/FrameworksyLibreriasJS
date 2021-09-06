@@ -54,13 +54,25 @@ function giveCandyArrays(arrayType, index) {
 		return candyRow;
 	}
 }
+// arreglos de filas
+function candyRows(index) {
+	var candyRow = giveCandyArrays('rows', index);
+	return candyRow;
+}
+// arreglos de colunmnas
+function candyColumns(index) {
+	var candyColumn = giveCandyArrays('columns');
+	return candyColumn[index];
+}
 
 //punto 3. verificar dulces >= 3 unidades, eliminar y sumar puntaje
 
-//punto 4. temporizador
+
 
 //punto 5. contador de movimientos
 
+
+//punto 4. temporizador
 //punto 6. boton de Iniciar
 //preparar juego
 $(function(){
