@@ -214,12 +214,9 @@ function startGame(){
     }
     checkBoard();
     $(this).text("Reiniciar");
-    $('#timer').startTimer({
-      onComplete: endGame
-    })
-
   });
 }
+
 
 //final del juego
 function endGame() {
